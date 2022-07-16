@@ -1,0 +1,29 @@
+create table Dim_Time
+(
+Date	datetime	primary key,
+Month	int,
+Year	int,
+Quarter	int
+)
+ ------------------------------------------------------
+
+CREATE PROCEDURE createTableDim_Time
+As
+Begin
+Declare @Smalldate datetime
+Declare @MaxDate datetime    
+    delete from Dim_Time
+    select @Smalldate= Min(Date) from Fact
+    select @MaxDate= Max(Date) from Fact
+    WHILE (@SmallDate<=@MaxDate)
+    BEGIN    
+       INSERT INTO Dim_Time (Date,Month,Year,Quarter)
+       values (@SmallDate,MONTH(@SmallDate), YEAR(@SmallDate),DATEPART(QUARTER,@SmallDate))
+     set @SmallDate=@SmallDate+1    
+    end    
+End
+
+--------------------------------------------------------------------
+
+exec createTableDim_Time
+
